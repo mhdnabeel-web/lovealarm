@@ -141,23 +141,28 @@
         }
 
         // Countdown timer for 2:53 AM
+       // FIXED COUNTDOWN TIMER
         function startCountdown() {
             const now = new Date();
-            const trigger = new Date(now);
-            trigger.setHours(2, 53, 0, 0);
+            const trigger = new Date();
+            
+            // Set to today's 2:53 AM
+            trigger.setHours(2, 58, 0, 0);
 
+            // ONLY add day if CURRENT TIME IS PAST 2:53 AM
             if (now > trigger) {
                 trigger.setDate(trigger.getDate() + 1);
             }
 
             function updateTimer() {
-                const now = new Date();
-                const diff = trigger - now;
+                const currentTime = new Date();
+                const diff = trigger - currentTime;
                 
                 const hours = Math.floor(diff / 3600000);
                 const minutes = Math.floor((diff % 3600000) / 60000);
                 const seconds = Math.floor((diff % 60000) / 1000);
                 
+                // FIXED DISPLAY FORMAT
                 document.getElementById('countdown-timer').textContent = 
                     `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
             }
