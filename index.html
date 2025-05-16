@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Reasons I Love You 💖</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        :root {
+            --primary-color: #ff69b4;
+            --secondary-color: #ffb6c1;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive;
+            background: linear-gradient(135deg, #fff0f5, #ffe4e1);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 600px;
+        }
+
+        .heart {
+            font-size: 4em;
+            animation: pulse 1.5s infinite;
+            margin: 20px 0;
+        }
+
+        #message-container {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(255,105,180,0.2);
+            margin: 20px 0;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #daily-message {
+            font-size: 1.4em;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        button {
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: transform 0.3s;
+            margin: 10px;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        #love-meter {
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+            background: conic-gradient(var(--primary-color) 0% 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            color: white;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .add-reason {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="heart">💖</div>
+        <h1>Good Morning, My Love! 🌅</h1>
+        
+        <div id="message-container">
+            <p id="daily-message">Loading today's special reason...</p>
+        </div>
+
+        <button id="next-reason">Tomorrow's Preview 🕰️</button>
+        <button id="add-reason">Add New Reason ✏️</button>
+
+        <div id="love-meter">
+            <span>100%</span>
+        </div>
+
+        <div class="countdown">
+            <p>Next reminder in: <span id="countdown-timer">24:00:00</span></p>
+        </div>
+    </div>
+
+    <script>
+        // Love reasons database (initialize with some examples)
+        let loveReasons = JSON.parse(localStorage.getItem('loveReasons')) || [
+            "Your smile makes my heart skip a beat",
+            "The way you [specific action] shows how caring you are",
+            "I love how we can [shared activity] together",
+            "You inspire me to be a better person every day"
+        ];
+
+        // Daily message logic
+        function getDailyMessage() {
+            const today = new Date();
+            const seed = today.getFullYear() + today.getMonth() + today.getDate();
+            const index = seed % loveReasons.length;
+            return loveReasons[index];
+        }
+
+        // Update message display
+        function updateDisplay() {
+            document.getElementById('daily-message').textContent = getDailyMessage();
+            startCountdown();
+        }
+
+        // Countdown timer
+        function startCountdown() {
+            const now = new Date();
+            const nextDay = new Date(now);
+            nextDay.setDate(now.getDate() + 1);
+            nextDay.setHours(0, 0, 0, 0);
+
+            function updateTimer() {
+                const now = new Date();
+                const diff = nextDay - now;
+                
+                const hours = Math.floor(diff / 3600000);
+                const minutes = Math.floor((diff % 3600000) / 60000);
+                const seconds = Math.floor((diff % 60000) / 1000);
+                
+                document.getElementById('countdown-timer').textContent = 
+                    `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }
+
+            updateTimer();
+            setInterval(updateTimer, 1000);
+        }
+
+        // Add new reason
+        document.getElementById('add-reason').addEventListener('click', () => {
+            const newReason = prompt("Enter a new reason you love them:");
+            if (newReason) {
+                loveReasons.push(newReason);
+                localStorage.setItem('loveReasons', JSON.stringify(loveReasons));
+                updateDisplay();
+            }
+        });
+
+        // Preview next reason
+        document.getElementById('next-reason').addEventListener('click', () => {
+            const currentIndex = loveReasons.indexOf(document.getElementById('daily-message').textContent);
+            const nextIndex = (currentIndex + 1) % loveReasons.length;
+            document.getElementById('daily-message').textContent = loveReasons[nextIndex];
+        });
+
+        // Initialize
+        updateDisplay();
+
+        // PWA Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => console.log('SW registered'))
+                    .catch(err => console.log('SW registration failed'));
+            });
+        }
+
+        // Request notification permission
+        Notification.requestPermission().then(permission => {
+            if (permission === 'granted') {
+                // Schedule daily notification
+                const now = new Date();
+                const trigger = new Date();
+                trigger.setHours(8, 0, 0); // 8 AM daily
+                if (now > trigger) trigger.setDate(trigger.getDate() + 1);
+                
+                setTimeout(() => {
+                    new Notification("Good Morning! 🌞", {
+                        body: "Check today's reason why you're loved!",
+                        icon: 'heart-icon.png'
+                    });
+                }, trigger - now);
+            }
+        });
+    </script>
+</body>
+</html>
