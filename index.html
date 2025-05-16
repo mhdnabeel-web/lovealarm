@@ -112,7 +112,7 @@
     </div>
 
     <script>
-        // Love reasons database (initialize with some examples)
+        // Love reasons database
         let loveReasons = JSON.parse(localStorage.getItem('loveReasons')) || [
             "Your smile makes my heart skip a beat",
             "The way you [specific action] shows how caring you are",
@@ -120,30 +120,39 @@
             "You inspire me to be a better person every day"
         ];
 
-        // Daily message logic
+        // Daily message logic for 2:48 AM
         function getDailyMessage() {
-            const today = new Date();
-            const seed = today.getFullYear() + today.getMonth() + today.getDate();
-            const index = seed % loveReasons.length;
-            return loveReasons[index];
+            const now = new Date();
+            const trigger = new Date(now);
+            trigger.setHours(2, 48, 0, 0);
+            
+            if (now < trigger) {
+                now.setDate(now.getDate() - 1);
+            }
+            
+            const seed = now.getFullYear() + now.getMonth() + now.getDate();
+            return loveReasons[seed % loveReasons.length];
         }
 
-        // Update message display
+        // Update display
         function updateDisplay() {
             document.getElementById('daily-message').textContent = getDailyMessage();
             startCountdown();
         }
 
-        // Countdown timer
+        // Countdown timer for 2:48 AM
         function startCountdown() {
             const now = new Date();
-            const nextDay = new Date(now);
-            nextDay.setDate(now.getDate() + 1);
-            nextDay.setHours(0, 0, 0, 0);
+            const trigger = new Date(now);
+            trigger.setHours(2, 48, 0, 0);
+
+            if (now > trigger) {
+                trigger.setDate(trigger.getDate() + 1);
+            }
 
             function updateTimer() {
                 const now = new Date();
-                const diff = nextDay - now;
+                const diff = trigger - now;
                 
                 const hours = Math.floor(diff / 3600000);
                 const minutes = Math.floor((diff % 3600000) / 60000);
@@ -186,21 +195,25 @@
             });
         }
 
-        // Request notification permission
+        // Notification setup for 2:48 AM
         Notification.requestPermission().then(permission => {
             if (permission === 'granted') {
-                // Schedule daily notification
                 const now = new Date();
                 const trigger = new Date();
-                trigger.setHours(2, 44, 0); // 8 AM daily
-                if (now > trigger) trigger.setDate(trigger.getDate() + 1);
+                trigger.setHours(2, 48, 0, 0);
                 
+                if (now > trigger) {
+                    trigger.setDate(trigger.getDate() + 1);
+                }
+
+                const timeoutDuration = trigger - now;
+
                 setTimeout(() => {
-                    new Notification("Good Morning! 🌞", {
-                        body: "Check today's reason why you're loved!",
+                    new Notification("Moonlight Message 🌙", {
+                        body: "Even at 2:48 AM, you're all I think about",
                         icon: 'heart-icon.png'
                     });
-                }, trigger - now);
+                }, timeoutDuration);
             }
         });
     </script>
