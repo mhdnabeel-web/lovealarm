@@ -120,11 +120,11 @@
             "You inspire me to be a better person every day"
         ];
 
-        // Daily message logic for 2:48 AM
+        // Daily message logic for 2:53 AM
         function getDailyMessage() {
             const now = new Date();
             const trigger = new Date(now);
-            trigger.setHours(2, 48, 0, 0);
+            trigger.setHours(2, 53, 0, 0);
             
             if (now < trigger) {
                 now.setDate(now.getDate() - 1);
@@ -140,11 +140,11 @@
             startCountdown();
         }
 
-        // Countdown timer for 2:48 AM
+        // Countdown timer for 2:53 AM
         function startCountdown() {
             const now = new Date();
             const trigger = new Date(now);
-            trigger.setHours(2, 48, 0, 0);
+            trigger.setHours(2, 53, 0, 0);
 
             if (now > trigger) {
                 trigger.setDate(trigger.getDate() + 1);
@@ -195,12 +195,12 @@
             });
         }
 
-        // Notification setup for 2:48 AM
+        // Notification setup for 2:53 AM
         Notification.requestPermission().then(permission => {
             if (permission === 'granted') {
                 const now = new Date();
                 const trigger = new Date();
-                trigger.setHours(2, 48, 0, 0);
+                trigger.setHours(2, 53, 0, 0);
                 
                 if (now > trigger) {
                     trigger.setDate(trigger.getDate() + 1);
@@ -209,8 +209,8 @@
                 const timeoutDuration = trigger - now;
 
                 setTimeout(() => {
-                    new Notification("Moonlight Message 🌙", {
-                        body: "Even at 2:48 AM, you're all I think about",
+                    new Notification("Late Night Thoughts 🌌", {
+                        body: "At 2:53 AM, my heart whispers your name",
                         icon: 'heart-icon.png'
                     });
                 }, timeoutDuration);
