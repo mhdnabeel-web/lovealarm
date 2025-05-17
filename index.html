@@ -135,7 +135,7 @@
         function getDailyMessage() {
             const now = new Date();
             const trigger = new Date(now);
-            trigger.setHours(2, 53, 0, 0);
+            trigger.setHours(12, 0, 0, 0);
             
             if (now < trigger) {
                 now.setDate(now.getDate() - 1);
@@ -158,7 +158,7 @@
             const trigger = new Date();
             
             // Set to today's 2:53 AM
-            trigger.setHours(2, 58, 0, 0);
+            trigger.setHours(12, 0, 0, 0);
 
             // ONLY add day if CURRENT TIME IS PAST 2:53 AM
             if (now > trigger) {
@@ -216,7 +216,7 @@
             if (permission === 'granted') {
                 const now = new Date();
                 const trigger = new Date();
-                trigger.setHours(2, 53, 0, 0);
+                trigger.setHours(12, 0, 0, 0);
                 
                 if (now > trigger) {
                     trigger.setDate(trigger.getDate() + 1);
@@ -226,7 +226,7 @@
 
                 setTimeout(() => {
                     new Notification("Late Night Thoughts 🌌", {
-                        body: "At 2:53 AM, my heart whispers your name",
+                        body: "At 12:00 AM, my heart whispers your name",
                         icon: 'heart-icon.png'
                     });
                 }, timeoutDuration);
